@@ -1,0 +1,67 @@
+[
+  {
+    "language": "javascript",
+    "title": "El Nacimiento de JavaScript",
+    "text": "En 1995, Brendan Eich creó JavaScript en tan solo diez días mientras trabajaba en Netscape. Su objetivo era añadir interactividad a las páginas web estáticas de la época. Originalmente se llamó Mocha, luego LiveScript, y finalmente JavaScript para aprovechar la popularidad de Java, aunque ambos lenguajes son completamente distintos."
+  },
+  {
+    "language": "javascript",
+    "title": "La Guerra de los Navegadores",
+    "text": "Durante la guerra de navegadores entre Netscape e Internet Explorer, Microsoft creó su propia versión llamada JScript. Esta fragmentación obligó a los desarrolladores a escribir código diferente para cada navegador. No fue hasta la llegada de los estándares ECMAScript que el lenguaje comenzó a unificarse y madurar."
+  },
+  {
+    "language": "javascript",
+    "title": "El Renacimiento con Node.js",
+    "text": "En 2009, Ryan Dahl lanzó Node.js y cambió todo. Por primera vez, JavaScript podía ejecutarse fuera del navegador, directamente en servidores. Esto permitió que los desarrolladores usaran un único lenguaje en el cliente y el servidor, abriendo la puerta a una nueva era del desarrollo web moderno."
+  },
+  {
+    "language": "php",
+    "title": "El Origen de PHP",
+    "text": "PHP nació en 1994 de las manos de Rasmus Lerdorf, quien escribió un conjunto de scripts en C para rastrear visitas a su currículum en línea. Lo llamó Personal Home Page Tools. Con el tiempo, otros desarrolladores lo adoptaron y ampliaron hasta convertirse en el lenguaje del lado del servidor más utilizado en la web."
+  },
+  {
+    "language": "php",
+    "title": "PHP y el Poder del Open Source",
+    "text": "En 1997, Zeev Suraski y Andi Gutmans reescribieron el núcleo de PHP desde cero, creando el motor Zend. A partir de ese momento, PHP se convirtió en un proyecto de código abierto con una comunidad enorme. Frameworks como Laravel, Symfony y WordPress impulsaron PHP hasta convertirlo en el pilar de millones de sitios web."
+  },
+  {
+    "language": "python",
+    "title": "La Historia de Python",
+    "text": "Guido van Rossum comenzó a desarrollar Python a finales de los años ochenta como proyecto personal durante las vacaciones de Navidad. Quería crear un lenguaje fácil de leer, con una sintaxis limpia y cercana al inglés natural. En 1991 publicó la primera versión, que rápidamente ganó una comunidad apasionada y leal."
+  },
+  {
+    "language": "python",
+    "title": "Python y la Ciencia de Datos",
+    "text": "Durante décadas, Python fue un lenguaje popular pero no dominante. Todo cambió con la explosión del machine learning y la inteligencia artificial. Librerías como NumPy, Pandas y TensorFlow convirtieron a Python en el idioma oficial de los científicos de datos, investigadores y empresas tecnológicas de todo el mundo."
+  },
+  {
+    "language": "golang",
+    "title": "El Nacimiento de Go",
+    "text": "Go fue diseñado en 2007 por Robert Griesemer, Rob Pike y Ken Thompson dentro de Google. Estaban frustrados por la lentitud de compilación de C++ y la complejidad de Java. Su objetivo fue crear un lenguaje simple, rápido y con soporte nativo para la concurrencia, ideal para los sistemas distribuidos a gran escala de Google."
+  },
+  {
+    "language": "golang",
+    "title": "Go y las Goroutines",
+    "text": "Una de las innovaciones más brillantes de Go son las goroutines, unidades de ejecución concurrente extremadamente ligeras. Mientras que un thread del sistema operativo ocupa megabytes, una goroutine apenas usa unos pocos kilobytes. Esto permite que un programa Go maneje miles de tareas simultáneas con una eficiencia asombrosa."
+  },
+  {
+    "language": "java",
+    "title": "La Creación de Java",
+    "text": "Java fue creado por James Gosling en Sun Microsystems en 1995 con un principio fundamental: escribir una vez y ejecutar en cualquier lugar. Para lograrlo, el código Java se compila a bytecode que corre sobre la Máquina Virtual de Java. Este enfoque revolucionó el desarrollo empresarial y lo convirtió en el lenguaje más popular del mundo durante décadas."
+  },
+  {
+    "language": "java",
+    "title": "Java y el Ecosistema Empresarial",
+    "text": "A finales de los noventa y durante los dos mil, Java dominó el mundo empresarial de manera absoluta. Frameworks como Spring, Hibernate y Maven definieron cómo las grandes corporaciones construían sus sistemas. La plataforma Java EE se convirtió en el estándar de facto para aplicaciones bancarias, gubernamentales y de comercio electrónico."
+  },
+  {
+    "language": "css",
+    "title": "El Origen de CSS",
+    "text": "CSS fue propuesto por Håkon Wium Lie en 1994 y publicado por el W3C en 1996. Antes de CSS, el estilo se mezclaba directamente con el HTML mediante etiquetas como font y center, lo que hacía el código imposible de mantener. CSS separó el contenido del diseño y transformó para siempre la forma de construir sitios web."
+  },
+  {
+    "language": "css",
+    "title": "La Revolución de Flexbox y Grid",
+    "text": "Durante años, crear layouts en CSS fue un dolor de cabeza. Los desarrolladores dependían de floats y trucos con posicionamiento absoluto. La llegada de Flexbox en 2012 y CSS Grid en 2017 cambió todo radicalmente. Por primera vez, era posible crear diseños complejos y responsivos con código limpio, intuitivo y mantenible."
+  }
+]

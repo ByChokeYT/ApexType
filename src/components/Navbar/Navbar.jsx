@@ -17,7 +17,17 @@ const DIFFICULTY_FILTERS = [
   { id: 'profesional',  label: 'Profesional', dot: 'bg-[#f87171]' },
 ]
 
-const PROSE_FILTERS = [
+const PROSE_LANG_FILTERS = [
+  { id: 'all',        label: 'Todos' },
+  { id: 'javascript', label: 'JavaScript' },
+  { id: 'php',        label: 'PHP' },
+  { id: 'python',     label: 'Python' },
+  { id: 'golang',     label: 'Go' },
+  { id: 'java',       label: 'Java' },
+  { id: 'css',        label: 'CSS' },
+]
+
+const PROSE_GENRE_FILTERS = [
   { id: 'all',          label: 'Todos' },
   { id: 'español',      label: '🇧🇴 Español' },
   { id: 'english',      label: '🇺🇸 English' },
@@ -27,8 +37,8 @@ const PROSE_FILTERS = [
   { id: 'curiosidades', label: 'Curiosidades' },
 ]
 
-export default function Navbar({ mode, filter, difficulty, wpm, accuracy, level, xpPct, onModeChange, onFilterChange, onDifficultyChange }) {
-  const filters = mode === 'code' ? CODE_FILTERS : PROSE_FILTERS
+export default function Navbar({ mode, filter, proseGenre, difficulty, wpm, accuracy, level, xpPct, onModeChange, onFilterChange, onProseGenreChange, onDifficultyChange }) {
+  const langFilters = mode === 'code' ? CODE_FILTERS : PROSE_LANG_FILTERS
 
   return (
     <header className="w-full">
@@ -64,18 +74,19 @@ export default function Navbar({ mode, filter, difficulty, wpm, accuracy, level,
 
       {/* ── Sub-filter bar ────────────────────────────────────────── */}
       <div className="flex flex-col gap-2 pt-4">
-        {/* Language / Category row */}
+
+        {/* Row 1 — Language filter (code) or Lang history filter (prose) */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-[0.6rem] font-semibold text-apex-dim tracking-[1.5px] uppercase w-16 shrink-0">
-            {mode === 'code' ? 'Lenguaje' : 'Categoría'}
+            {mode === 'code' ? 'Lenguaje' : 'Historia de'}
           </span>
-          {filters.map(f => (
+          {langFilters.map(f => (
             <FilterChip key={f.id} label={f.label} active={filter === f.id} onClick={() => onFilterChange(f.id)} />
           ))}
         </div>
 
-        {/* Difficulty row — only in code mode */}
-        {mode === 'code' && (
+        {/* Row 2 — Difficulty (code) or Genre/Origin (prose) */}
+        {mode === 'code' ? (
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[0.6rem] font-semibold text-apex-dim tracking-[1.5px] uppercase w-16 shrink-0">
               Nivel
@@ -92,6 +103,15 @@ export default function Navbar({ mode, filter, difficulty, wpm, accuracy, level,
                 {d.dot && <span className={`w-1.5 h-1.5 rounded-full ${d.dot}`} />}
                 {d.label}
               </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[0.6rem] font-semibold text-apex-dim tracking-[1.5px] uppercase w-16 shrink-0">
+              Género
+            </span>
+            {PROSE_GENRE_FILTERS.map(g => (
+              <FilterChip key={g.id} label={g.label} active={proseGenre === g.id} onClick={() => onProseGenreChange(g.id)} />
             ))}
           </div>
         )}

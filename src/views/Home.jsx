@@ -8,6 +8,9 @@ import { useTimer }        from '../hooks/useTimer.js'
 import codeSnippets from '../data/code_snippets.json'
 import textsEs      from '../data/texts_es.json'
 import textsEn      from '../data/texts_en.json'
+import textsLangs   from '../data/texts_langs.json'   // ← historias de lenguajes
+
+const LANG_IDS = ['javascript', 'php', 'python', 'golang', 'java', 'css']
 
 function loadStats() {
   return JSON.parse(localStorage.getItem('apexTypeStats')) || { xp: 0, level: 1 }
@@ -16,8 +19,15 @@ function saveStats(s) {
   localStorage.setItem('apexTypeStats', JSON.stringify(s))
 }
 
-// Returns { text, badge, metadata }
-function pickSnippet(mode, filter, difficulty = 'all') {
+/**
+ * pickSnippet — selects a random text based on mode, filter and secondary filter
+ *
+ * Code mode:   filter = language | 'all',  difficulty = 'basico'|'medio'|'profesional'|'all'
+ * Prose mode:  filter = language | 'all'   → pulls from textsLangs when a language is selected
+ *              proseGenre = category | 'all' → further filters textsEs/textsEn general texts
+ */
+function pickSnippet(mode, filter, difficulty = 'all', proseGenre = 'all') {
+  // ── Code mode ────────────────────────────────────────────────
   if (mode === 'code') {
     let pool = codeSnippets
     if (filter !== 'all')     pool = pool.filter(s => s.language === filter)
@@ -32,19 +42,42 @@ function pickSnippet(mode, filter, difficulty = 'all') {
     }
   }
 
-  const esPool = textsEs.filter(t => filter === 'all' || filter === 'español' || t.category === filter)
-  const enPool = textsEn.filter(t => filter === 'all' || filter === 'english' || t.category === filter)
-  let pool = filter === 'español' ? esPool : filter === 'english' ? enPool : [...esPool, ...enPool]
-  if (!pool.length) pool = [...textsEs, ...textsEn]
+  // ── Prose mode ───────────────────────────────────────────────
+  // If a specific language is selected → show history of that language
+  if (filter !== 'all' && LANG_IDS.includes(filter)) {
+    let pool = textsLangs.filter(t => t.language === filter)
+    if (!pool.length) pool = textsLangs
+    const t = pool[Math.floor(Math.random() * pool.length)]
+    return {
+      text: t.text,
+      badge: `Historia · ${t.language.toUpperCase()} · ${t.title}`,
+      metadata: null,
+    }
+  }
 
+  // Generic prose — blend ES/EN with genre filter
+  const esPool = textsEs.filter(t =>
+    proseGenre === 'all' || proseGenre === 'español' || t.category === proseGenre
+  )
+  const enPool = textsEn.filter(t =>
+    proseGenre === 'all' || proseGenre === 'english' || t.category === proseGenre
+  )
+
+  let pool
+  if (proseGenre === 'español')      pool = esPool
+  else if (proseGenre === 'english') pool = enPool
+  else                               pool = [...esPool, ...enPool, ...textsLangs]
+
+  if (!pool.length) pool = [...textsEs, ...textsEn]
   const t = pool[Math.floor(Math.random() * pool.length)]
   return {
     text: t.text,
-    badge: `${t.title} · ${t.category}`,
+    badge: t.title ? `${t.language?.toUpperCase() ?? t.category} · ${t.title}` : `${t.category} · ${t.title}`,
     metadata: null,
   }
 }
 
+// ── Overlays ─────────────────────────────────────────────────────
 function LevelUpPopup({ level }) {
   return (
     <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
@@ -66,34 +99,36 @@ function CapsWarning() {
   )
 }
 
+// ── Main view ─────────────────────────────────────────────────────
 export default function Home() {
-  const [mode,       setMode]       = useState('code')
-  const [filter,     setFilter]     = useState('all')
-  const [difficulty, setDifficulty] = useState('all')
-  const [current,    setCurrent]    = useState(() => pickSnippet('code', 'all', 'all'))
-  const [userStats,  setUserStats]  = useState(loadStats)
+  const [mode,        setMode]        = useState('code')
+  const [filter,      setFilter]      = useState('all')
+  const [difficulty,  setDifficulty]  = useState('all')
+  const [proseGenre,  setProseGenre]  = useState('all')
+  const [current,     setCurrent]     = useState(() => pickSnippet('code', 'all'))
+  const [userStats,   setUserStats]   = useState(loadStats)
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [capsLock,    setCapsLock]    = useState(false)
 
   const engine = useTypingEngine()
   const timer  = useTimer(engine.isActive, engine.isFinished, engine.currentIndex, engine.errors)
 
-  const startNew = useCallback((m = mode, f = filter, d = difficulty) => {
-    const sample = pickSnippet(m, f, d)
+  const startNew = useCallback((m = mode, f = filter, d = difficulty, pg = proseGenre) => {
+    const sample = pickSnippet(m, f, d, pg)
     setCurrent(sample)
     engine.reset(sample.text)
     timer.reset()
-  }, [mode, filter, difficulty, engine, timer])
+  }, [mode, filter, difficulty, proseGenre, engine, timer])
 
-  // Init
   useEffect(() => { engine.reset(current.text) }, []) // eslint-disable-line
 
   const handleModeChange = (m) => {
-    setMode(m); setFilter('all'); setDifficulty('all')
-    startNew(m, 'all', 'all')
+    setMode(m); setFilter('all'); setDifficulty('all'); setProseGenre('all')
+    startNew(m, 'all', 'all', 'all')
   }
-  const handleFilterChange = (f) => { setFilter(f); startNew(mode, f, difficulty) }
-  const handleDifficultyChange = (d) => { setDifficulty(d); startNew(mode, filter, d) }
+  const handleFilterChange      = (f)  => { setFilter(f);     startNew(mode, f, difficulty, proseGenre) }
+  const handleDifficultyChange  = (d)  => { setDifficulty(d); startNew(mode, filter, d, proseGenre) }
+  const handleProseGenreChange  = (pg) => { setProseGenre(pg); startNew(mode, filter, difficulty, pg) }
 
   // XP on finish
   useEffect(() => {
@@ -134,6 +169,7 @@ export default function Home() {
           <Navbar
             mode={mode}
             filter={filter}
+            proseGenre={proseGenre}
             difficulty={difficulty}
             wpm={timer.wpm}
             accuracy={timer.accuracy}
@@ -142,6 +178,7 @@ export default function Home() {
             onModeChange={handleModeChange}
             onFilterChange={handleFilterChange}
             onDifficultyChange={handleDifficultyChange}
+            onProseGenreChange={handleProseGenreChange}
           />
 
           <main className="flex-1 flex items-start justify-center py-4">
@@ -167,7 +204,7 @@ export default function Home() {
           </main>
         </div>
 
-        {/* ── Footer ─────────────────────────────────────────────── */}
+        {/* ── Footer ──────────────────────────────────────────────── */}
         <footer className="border-t border-white/[0.04] py-4">
           <div className="max-w-[860px] mx-auto px-8 flex items-center justify-between text-[0.7rem] text-apex-dim">
             <div className="flex items-center gap-4">
