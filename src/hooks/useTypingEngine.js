@@ -26,37 +26,74 @@ export function useTypingEngine() {
   /** Process a typed character */
   const handleInput = useCallback((typedChar) => {
     setIsActive(true)
+    let nextIndex = currentIndex
+
     setCharStates(prev => {
       const next = [...prev]
       if (typedChar === snippet[currentIndex]) {
         next[currentIndex] = 'correct'
+        nextIndex = currentIndex + 1
+
+        // If we just typed a newline, auto-complete leading whitespace on the next line (VS Code style)
+        if (typedChar === '\n') {
+          while (nextIndex < snippet.length && (snippet[nextIndex] === ' ' || snippet[nextIndex] === '\t')) {
+            next[nextIndex] = 'correct'
+            nextIndex++
+          }
+        }
       } else {
         next[currentIndex] = 'incorrect'
         setErrors(e => e + 1)
+        nextIndex = currentIndex + 1
       }
       return next
     })
 
     setCurrentIndex(prev => {
-      const next = prev + 1
-      if (next >= snippet.length) {
+      const finalIndex = nextIndex
+      if (finalIndex >= snippet.length) {
         setIsFinished(true)
         setIsActive(false)
       }
-      return next
+      return finalIndex
     })
   }, [snippet, currentIndex])
 
   /** Process a backspace */
   const handleBackspace = useCallback(() => {
     if (currentIndex <= 0) return
-    setCurrentIndex(prev => prev - 1)
+
+    let targetIndex = currentIndex - 1
+
+    // VS Code Backspace Undo: Check if we are reversing past auto-skipped indentation.
+    // If all characters from the preceding newline up to the current index are spaces/tabs,
+    // we backspace past all of them to the newline.
+    let isLeadingWhitespace = true
+    let scanIndex = targetIndex
+    while (scanIndex >= 0) {
+      if (snippet[scanIndex] === '\n') {
+        break
+      }
+      if (snippet[scanIndex] !== ' ' && snippet[scanIndex] !== '\t') {
+        isLeadingWhitespace = false
+        break
+      }
+      scanIndex--
+    }
+
+    if (isLeadingWhitespace && scanIndex >= 0) {
+      targetIndex = scanIndex // Jump back to the newline character itself
+    }
+
+    setCurrentIndex(targetIndex)
     setCharStates(prev => {
       const next = [...prev]
-      next[currentIndex - 1] = 'pending'
+      for (let i = targetIndex; i < currentIndex; i++) {
+        next[i] = 'pending'
+      }
       return next
     })
-  }, [currentIndex])
+  }, [currentIndex, snippet])
 
   return {
     snippet,

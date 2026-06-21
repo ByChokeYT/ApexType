@@ -21,6 +21,20 @@
     "output": "> Total: 15"
   },
   {
+    "id": "js-medio-4",
+    "language": "javascript",
+    "difficulty": "medio",
+    "code": "const items = [\"Laptop\", \"Mouse\", \"Teclado\"];\nconst listHTML = items.map(item => `<li>${item}</li>`).join(\"\\n\");\nconsole.log(listHTML);",
+    "output": "> <li>Laptop</li>\n> <li>Mouse</li>\n> <li>Teclado</li>"
+  },
+  {
+    "id": "js-profesional-3",
+    "language": "javascript",
+    "difficulty": "profesional",
+    "code": "async function checkStatus(url) {\n  const response = await fetch(url);\n  const data = await response.json();\n  return data.active ? \"Online\" : \"Offline\";\n}\ncheckStatus(\"https://api.apex.type\").then(console.log);",
+    "output": "> Online"
+  },
+  {
     "id": "py-basico-1",
     "language": "python",
     "difficulty": "basico",
@@ -35,11 +49,32 @@
     "output": "> Promedio: 6.0"
   },
   {
+    "id": "py-medio-2",
+    "language": "python",
+    "difficulty": "medio",
+    "code": "names = [\"alex\", \"david\", \"elena\", \"maria\"]\ncapitalized = [n.capitalize() for n in names if len(n) > 4]\nprint(\"Filtrados:\", capitalized)",
+    "output": "> Filtrados: ['David', 'Elena', 'Maria']"
+  },
+  {
+    "id": "py-medio-3",
+    "language": "python",
+    "difficulty": "medio",
+    "code": "precios = {\"laptop\": 800, \"mouse\": 25}\nfor item, precio in precios.items():\n    print(f\"{item}: ${precio}\")",
+    "output": "> laptop: $800\n> mouse: $25"
+  },
+  {
     "id": "php-basico-1",
     "language": "php",
     "difficulty": "basico",
     "code": "<?php\n$lenguaje = \"PHP\";\n$anio = 2024;\necho \"Aprendiendo {$lenguaje} en {$anio}\";",
     "output": "> Aprendiendo PHP en 2024"
+  },
+  {
+    "id": "php-medio-2",
+    "language": "php",
+    "difficulty": "medio",
+    "code": "<?php\n$user = [\"name\" => \"Luis\", \"role\" => \"Admin\"];\nforeach ($user as $key => $val) {\n  echo \"{$key}: {$val}\\n\";\n}",
+    "output": "> name: Luis\n> role: Admin"
   },
   {
     "id": "js-medio-1",
@@ -77,11 +112,25 @@
     "output": "> 250, 430"
   },
   {
+    "id": "css-basico-1",
+    "language": "css",
+    "difficulty": "basico",
+    "code": ":root {\n  --primary: #a78bfa;\n  --dark: #0d0d0d;\n}\n.container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}",
+    "output": "> ✓ Centrado Flexbox aplicado\n> Color primario: #a78bfa"
+  },
+  {
     "id": "css-medio-1",
     "language": "css",
     "difficulty": "medio",
     "code": ".card {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 1.5rem;\n  padding: 2rem;\n  background: #0d0d0d;\n  border-radius: 12px;\n}",
     "output": "> ✓ Estilos aplicados correctamente\n> Grid: 3 columnas · gap: 1.5rem"
+  },
+  {
+    "id": "css-profesional-1",
+    "language": "css",
+    "difficulty": "profesional",
+    "code": ".gallery {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  gap: 20px;\n  padding: 10px;\n}",
+    "output": "> ✓ Galería Grid Auto-fit creada\n> Columnas auto-adaptables con gap: 20px"
   },
   {
     "id": "js-profesional-1",
@@ -101,8 +150,15 @@
     "id": "py-profesional-1",
     "language": "python",
     "difficulty": "profesional",
-    "code": "from functools import reduce\nfrom typing import Callable\n\ndef pipe(*fns: Callable):\n    return lambda x: reduce(lambda v, f: f(v), fns, x)\n\nprocesar = pipe(\n    lambda s: s.strip(),\n    lambda s: s.upper(),\n    lambda s: f\"[{s}]\",\n)\nprint(processar(\"  apexType  \"))",
+    "code": "from functools import reduce\nfrom typing import Callable\n\ndef pipe(*fns: Callable):\n    return lambda x: reduce(lambda v, f: f(v), fns, x)\n\nprocesar = pipe(\n    lambda s: s.strip(),\n    lambda s: s.upper(),\n    lambda s: f\"[{s}]\",\n)\nprint(procesar(\"  apexType  \"))",
     "output": "> [APEXTYPE]"
+  },
+  {
+    "id": "go-medio-1",
+    "language": "golang",
+    "difficulty": "medio",
+    "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  scores := []int{90, 85, 95}\n  scores = append(scores, 100)\n  fmt.Printf(\"Scores count: %d\\n\", len(scores))\n}",
+    "output": "> Scores count: 4"
   },
   {
     "id": "go-profesional-1",
@@ -110,6 +166,27 @@
     "difficulty": "profesional",
     "code": "package main\n\nimport (\n  \"fmt\"\n  \"sync\"\n)\n\nfunc main() {\n  var wg sync.WaitGroup\n  for i := 1; i <= 3; i++ {\n    wg.Add(1)\n    go func(n int) {\n      defer wg.Done()\n      fmt.Printf(\"goroutine %d done\\n\", n)\n    }(i)\n  }\n  wg.Wait()\n}",
     "output": "> goroutine 1 done\n> goroutine 2 done\n> goroutine 3 done"
+  },
+  {
+    "id": "go-profesional-2",
+    "language": "golang",
+    "difficulty": "profesional",
+    "code": "package main\n\nimport \"fmt\"\n\ntype Developer struct {\n  Name  string\n  Langs []string\n}\n\nfunc (d Developer) Greet() string {\n  return fmt.Sprintf(\"Hola, soy %s\", d.Name)\n}\n\nfunc main() {\n  dev := Developer{Name: \"Alex\", Langs: []string{\"Go\", \"Python\"}}\n  fmt.Println(dev.Greet())\n}",
+    "output": "> Hola, soy Alex"
+  },
+  {
+    "id": "java-medio-1",
+    "language": "java",
+    "difficulty": "medio",
+    "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) {\n    List<String> list = new ArrayList<>();\n    list.add(\"Java\");\n    list.add(\"Kotlin\");\n    list.forEach(lang -> System.out.println(\"Lang: \" + lang));\n  }\n}",
+    "output": "> Lang: Java\n> Lang: Kotlin"
+  },
+  {
+    "id": "java-medio-2",
+    "language": "java",
+    "difficulty": "medio",
+    "code": "class User {\n  private String name;\n  public User(String name) { this.name = name; }\n  public String getName() { return this.name; }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    User u = new User(\"Apex\");\n    System.out.println(\"Usuario: \" + u.getName());\n  }\n}",
+    "output": "> Usuario: Apex"
   },
   {
     "id": "java-profesional-1",

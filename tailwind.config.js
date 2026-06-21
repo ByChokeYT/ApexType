@@ -7,16 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        'apex-black':   '#000000',
-        'apex-surface': '#0d0d0d',
-        'apex-s2':      '#141414',
-        'apex-s3':      '#1c1c1c',
-        'apex-text':    '#e4e4e7',
-        'apex-muted':   '#52525b',
-        'apex-dim':     '#27272a',
-        'apex-violet':  '#a78bfa',
-        'apex-emerald': '#6ee7b7',
-        'apex-amber':   '#fbbf24',
+        'apex-black':   'var(--apex-black)',
+        'apex-surface': 'var(--apex-surface)',
+        'apex-s2':      'var(--apex-s2)',
+        'apex-s3':      'var(--apex-s3)',
+        'apex-text':    'var(--apex-text)',
+        'apex-muted':   'var(--apex-muted)',
+        'apex-dim':     'var(--apex-dim)',
+        'apex-violet':  'var(--apex-violet)',
+        'apex-emerald': 'var(--apex-emerald)',
+        'apex-amber':   'var(--apex-amber)',
+        'apex-glow':    'var(--apex-glow)',
       },
       fontFamily: {
         ui:   ['Outfit', 'system-ui', 'sans-serif'],

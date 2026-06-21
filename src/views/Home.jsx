@@ -2,6 +2,8 @@ import { useEffect, useCallback, useState } from 'react'
 import Navbar     from '../components/Navbar/Navbar.jsx'
 import TypingArea from '../components/TypingArea/TypingArea.jsx'
 import StatsBoard from '../components/StatsBoard/StatsBoard.jsx'
+import LoginView  from '../components/LoginView/LoginView.jsx'
+import HubView    from '../components/HubView/HubView.jsx'
 import { useTypingEngine } from '../hooks/useTypingEngine.js'
 import { useTimer }        from '../hooks/useTimer.js'
 
@@ -110,8 +112,33 @@ export default function Home() {
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [capsLock,    setCapsLock]    = useState(false)
 
+  // Premium Custom States
+  const [theme, setTheme] = useState(() => localStorage.getItem('apexTypeTheme') || 'violet')
+  const [sound, setSound] = useState(() => localStorage.getItem('apexTypeSound') || 'mech')
+  const [focusMode, setFocusMode] = useState(() => localStorage.getItem('apexTypeFocusMode') === 'true')
+
+  // Routing and Username states
+  const [username, setUsername] = useState(() => localStorage.getItem('apexTypeUsername') || '')
+  const [currentView, setCurrentView] = useState(() => username ? 'hub' : 'login')
+
   const engine = useTypingEngine()
   const timer  = useTimer(engine.isActive, engine.isFinished, engine.currentIndex, engine.errors)
+
+  // Synchronize theme with DOM
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('apexTypeTheme', theme)
+  }, [theme])
+
+  // Synchronize focusMode storage
+  useEffect(() => {
+    localStorage.setItem('apexTypeFocusMode', focusMode)
+  }, [focusMode])
+
+  // Synchronize sound storage
+  useEffect(() => {
+    localStorage.setItem('apexTypeSound', sound)
+  }, [sound])
 
   const startNew = useCallback((m = mode, f = filter, d = difficulty, pg = proseGenre) => {
     const sample = pickSnippet(m, f, d, pg)
@@ -159,37 +186,81 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onKey)
   }, [startNew, engine.isFinished])
 
+  const handleLogin = (user) => {
+    setUsername(user)
+    localStorage.setItem('apexTypeUsername', user)
+    setCurrentView('hub')
+  }
+
+  const handleStartTraining = (config) => {
+    setMode(config.mode)
+    setDifficulty(config.difficulty)
+    setFilter(config.filter)
+    startNew(config.mode, config.filter, config.difficulty)
+    setCurrentView('game')
+  }
+
   const xpPct = Math.round((userStats.xp / (userStats.level * 100)) * 100)
+  
+  if (currentView === 'login') {
+    return (
+      <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-6">
+        <LoginView onLogin={handleLogin} />
+      </div>
+    )
+  }
+
+  const isTypingActive = engine.isActive && !engine.isFinished
+  const hideOuter = focusMode && isTypingActive && currentView === 'game'
 
   return (
     <>
       <div className="relative z-10 w-full min-h-screen flex flex-col">
         <div className="flex-1 flex flex-col max-w-[860px] w-full mx-auto px-8 pt-8 pb-6 gap-10">
 
-          <Navbar
-            mode={mode}
-            filter={filter}
-            proseGenre={proseGenre}
-            difficulty={difficulty}
-            wpm={timer.wpm}
-            accuracy={timer.accuracy}
-            level={userStats.level}
-            xpPct={xpPct}
-            onModeChange={handleModeChange}
-            onFilterChange={handleFilterChange}
-            onDifficultyChange={handleDifficultyChange}
-            onProseGenreChange={handleProseGenreChange}
-          />
+          <div className={`transition-all duration-[600ms] ease-in-out transform ${
+            hideOuter ? 'opacity-0 -translate-y-6 pointer-events-none' : 'opacity-100 translate-y-0'
+          }`}>
+            <Navbar
+              mode={mode}
+              filter={filter}
+              proseGenre={proseGenre}
+              difficulty={difficulty}
+              wpm={timer.wpm}
+              accuracy={timer.accuracy}
+              level={userStats.level}
+              xpPct={xpPct}
+              theme={theme}
+              onThemeChange={setTheme}
+              sound={sound}
+              onSoundChange={setSound}
+              focusMode={focusMode}
+              onFocusModeChange={setFocusMode}
+              currentView={currentView}
+              onViewChange={setCurrentView}
+              onModeChange={handleModeChange}
+              onFilterChange={handleFilterChange}
+              onDifficultyChange={handleDifficultyChange}
+              onProseGenreChange={handleProseGenreChange}
+            />
+          </div>
 
           <main className="flex-1 flex items-start justify-center py-4">
-            {engine.isFinished ? (
+            {currentView === 'hub' ? (
+              <HubView
+                username={username}
+                level={userStats.level}
+                xpPct={xpPct}
+                onStartTraining={handleStartTraining}
+              />
+            ) : engine.isFinished ? (
               <StatsBoard
                 wpm={timer.wpm}
                 accuracy={timer.accuracy}
                 errors={engine.errors}
                 elapsed={timer.elapsed}
                 snippet={current.metadata}
-                onRestart={startNew}
+                onRestart={() => startNew()}
               />
             ) : (
               <TypingArea
@@ -197,6 +268,7 @@ export default function Home() {
                 charStates={engine.charStates}
                 currentIndex={engine.currentIndex}
                 badge={current.badge}
+                soundMode={sound}
                 onInput={engine.handleInput}
                 onBackspace={engine.handleBackspace}
               />
@@ -205,22 +277,31 @@ export default function Home() {
         </div>
 
         {/* ── Footer ──────────────────────────────────────────────── */}
-        <footer className="border-t border-white/[0.04] py-4">
+        <footer className={`border-t border-white/[0.04] py-4 transition-all duration-[600ms] ease-in-out transform ${
+          hideOuter ? 'opacity-0 translate-y-6 pointer-events-none' : 'opacity-100 translate-y-0'
+        }`}>
           <div className="max-w-[860px] mx-auto px-8 flex items-center justify-between text-[0.7rem] text-apex-dim">
             <div className="flex items-center gap-4">
               <ShortcutHint keys={['Tab']}       label="nuevo fragmento" />
               <ShortcutHint keys={['Backspace']} label="borrar" />
             </div>
-            <span className="tracking-widest font-code uppercase text-[0.6rem]">
-              <span className="text-apex-violet/60">apex</span>Type
-            </span>
+            <div className="flex flex-col items-center">
+              <span className="tracking-widest font-code uppercase text-[0.6rem] transition-colors duration-300 hover:text-apex-violet">
+                <span className="text-apex-violet/60">apex</span>Type
+              </span>
+              <span className="text-[0.52rem] text-apex-muted mt-0.5 font-medium tracking-wide">
+                Creado por <span className="text-apex-violet/80 font-bold hover:text-apex-violet transition-colors">ByChokeYT</span>
+              </span>
+            </div>
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-apex-emerald" />
-                {mode === 'code' ? 'Modo Código' : 'Modo Lectura'}
+              <span className="flex items-center gap-1.5 text-apex-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-apex-emerald animate-pulse" />
+                {currentView === 'hub' ? 'Tech Hub' : mode === 'code' ? 'Modo Código' : 'Modo Lectura'}
               </span>
               <span className="text-white/10">·</span>
-              <span>{engine.currentIndex}/{current.text.length} chars</span>
+              <span className="font-code text-apex-muted">
+                {currentView === 'hub' ? 'Nivel de Progreso' : `${engine.currentIndex}/${current.text.length} chars`}
+              </span>
             </div>
           </div>
         </footer>

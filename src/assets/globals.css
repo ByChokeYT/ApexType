@@ -1,19 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Google Fonts ──────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+/* ── Theme Definitions ─────────────────────────────────────────── */
+:root {
+  /* Default Theme: Apex Violet */
+  --apex-black: #06050b;
+  --apex-surface: #0c0b12;
+  --apex-s2: #12101b;
+  --apex-s3: #1b172a;
+  --apex-text: #f4f4f5;
+  --apex-muted: #7c729e;
+  --apex-dim: #3a3350;
+  --apex-violet: #a78bfa;
+  --apex-emerald: #10b981;
+  --apex-amber: #fbbf24;
+  --apex-glow: rgba(167, 139, 250, 0.08);
+  --apex-glow-strong: rgba(167, 139, 250, 0.2);
+}
+
+[data-theme="amber"] {
+  --apex-black: #070603;
+  --apex-surface: #0e0b06;
+  --apex-s2: #18130a;
+  --apex-s3: #241d0f;
+  --apex-text: #fafaf9;
+  --apex-muted: #a3895c;
+  --apex-dim: #54442a;
+  --apex-violet: #fbbf24;
+  --apex-emerald: #10b981;
+  --apex-amber: #f87171; /* red error */
+  --apex-glow: rgba(251, 191, 36, 0.08);
+  --apex-glow-strong: rgba(251, 191, 36, 0.2);
+}
+
+[data-theme="emerald"] {
+  --apex-black: #020604;
+  --apex-surface: #050c08;
+  --apex-s2: #09170e;
+  --apex-s3: #112619;
+  --apex-text: #f0fdf4;
+  --apex-muted: #4ade80;
+  --apex-dim: #164e2e;
+  --apex-violet: #34d399;
+  --apex-emerald: #10b981;
+  --apex-amber: #f87171;
+  --apex-glow: rgba(52, 211, 153, 0.08);
+  --apex-glow-strong: rgba(52, 211, 153, 0.2);
+}
+
+[data-theme="ruby"] {
+  --apex-black: #080304;
+  --apex-surface: #100608;
+  --apex-s2: #1c0a0e;
+  --apex-s3: #2d0f16;
+  --apex-text: #fff1f2;
+  --apex-muted: #fda4af;
+  --apex-dim: #88132d;
+  --apex-violet: #f43f5e;
+  --apex-emerald: #10b981;
+  --apex-amber: #fbbf24;
+  --apex-glow: rgba(244, 63, 94, 0.08);
+  --apex-glow-strong: rgba(244, 63, 94, 0.2);
+}
 
 /* ── Base resets ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body, #root {
   height: 100%;
-  background-color: #000000;
-  color: #e4e4e7;
+  background-color: var(--apex-black);
+  color: var(--apex-text);
   font-family: 'Outfit', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* ── Subtle grid texture ──────────────────────────────────────── */
@@ -22,11 +84,34 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
   background-size: 48px 48px;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Ambient pulsing radial glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, var(--apex-glow-strong) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
+  opacity: 0.85;
+  animation: pulse-glow 10s ease-in-out infinite alternate;
+  transition: background 0.4s ease;
+}
+
+@keyframes pulse-glow {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.65; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.85; }
 }
 
 /* ── Custom scrollbar ─────────────────────────────────────────── */
