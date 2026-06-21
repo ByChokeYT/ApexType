@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apexType | Elite Typing Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-accent">apex</span>Type
+      </div>
+      <div class="stats-live">
+        <div class="stat">
+          <span class="stat-label">WPM</span>
+          <span id="wpm" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">ACC</span>
+          <span id="acc" class="stat-value">100%</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="game-container">
+      <!-- Selector de Modo Principal -->
+      <div class="mode-selector">
+        <button id="mode-code-btn" class="mode-btn active" data-mode="code">
+          <span class="mode-icon">💻</span> Programación
+        </button>
+        <button id="mode-prose-btn" class="mode-btn" data-mode="prose">
+          <span class="mode-icon">✍️</span> Lectura y Escritura
+        </button>
+      </div>
+
+      <div id="game-ui">
+        <div class="language-badge" id="language-badge">javascript</div>
+        <div id="words-wrapper" class="words-wrapper">
+          <!-- El contenido se inyectará aquí dinámicamente -->
+          <div id="caret" class="caret"></div>
+        </div>
+        <input type="text" id="input-field" class="input-field" autofocus autocomplete="off" />
+      </div>
+
+      <div id="results-screen" class="results-screen hidden">
+        <h2 class="results-title">Sesión Completada</h2>
+        <div class="results-grid">
+          <div class="result-card">
+            <span class="result-label">WPM</span>
+            <span id="final-wpm" class="result-value">0</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label">Precisión</span>
+            <span id="final-acc" class="result-value">0%</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label">Errores</span>
+            <span id="final-errors" class="result-value">0</span>
+          </div>
+        </div>
+        <button id="restart-btn" class="restart-btn">Reiniciar (Tab + Enter)</button>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Pulsa <kbd>Tab</kbd> para reiniciar la sesión actual</p>
+    </footer>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
