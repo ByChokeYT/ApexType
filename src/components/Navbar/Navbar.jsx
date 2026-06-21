@@ -1,84 +1,75 @@
-// Navbar.jsx
-const CODE_FILTERS  = ['all', 'javascript', 'php', 'python', 'golang', 'java', 'css']
-const PROSE_FILTERS = ['all', 'español', 'english', 'citas', 'quotes', 'historias', 'stories', 'curiosidades', 'facts']
+// Navbar.jsx — Full premium nav with logo, mode toggle, stats, level and sub-filters
 
-const FILTER_LABELS = {
-  all: 'Todos', javascript: 'JS', php: 'PHP', python: 'Python',
-  golang: 'Go', java: 'Java', css: 'CSS',
-  español: 'ES', english: 'EN',
-  citas: 'Citas', quotes: 'Quotes',
-  historias: 'Historias', stories: 'Stories',
-  curiosidades: 'Curiosidades', facts: 'Facts',
-}
+const CODE_FILTERS = [
+  { id: 'all',        label: 'Todos' },
+  { id: 'javascript', label: 'JavaScript' },
+  { id: 'php',        label: 'PHP' },
+  { id: 'python',     label: 'Python' },
+  { id: 'golang',     label: 'Go' },
+  { id: 'java',       label: 'Java' },
+  { id: 'css',        label: 'CSS' },
+]
+
+const PROSE_FILTERS = [
+  { id: 'all',          label: 'Todos' },
+  { id: 'español',      label: '🇧🇴 Español' },
+  { id: 'english',      label: '🇺🇸 English' },
+  { id: 'citas',        label: 'Citas' },
+  { id: 'quotes',       label: 'Quotes' },
+  { id: 'historias',    label: 'Historias' },
+  { id: 'curiosidades', label: 'Curiosidades' },
+]
 
 export default function Navbar({ mode, filter, wpm, accuracy, level, xpPct, onModeChange, onFilterChange }) {
   const filters = mode === 'code' ? CODE_FILTERS : PROSE_FILTERS
 
   return (
-    <header className="relative z-10 flex flex-col gap-4">
-      {/* Top row */}
-      <div className="flex justify-between items-center gap-4 flex-wrap">
-        {/* Level + XP */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-apex-muted tracking-[1.5px] uppercase">
-            NVL {level}
-          </span>
-          <div className="w-14 h-[2px] bg-apex-s3 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-apex-violet opacity-60 transition-all duration-500"
-              style={{ width: `${xpPct}%` }}
-            />
-          </div>
-        </div>
+    <header className="w-full">
+      {/* ── Top bar ──────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-6 pb-5 border-b border-white/[0.05]">
 
         {/* Logo */}
-        <div className="font-ui text-xl font-bold tracking-tight">
-          <span className="text-apex-violet">apex</span>
-          <span className="text-apex-text">Type</span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-apex-violet/10 border border-apex-violet/20 flex items-center justify-center">
+            <span className="text-apex-violet text-sm font-bold">A</span>
+          </div>
+          <span className="font-ui text-[1.1rem] font-bold tracking-tight">
+            <span className="text-apex-violet">apex</span>
+            <span className="text-apex-text">Type</span>
+          </span>
         </div>
 
-        {/* Live stats */}
+        {/* Mode toggle */}
+        <div className="flex items-center gap-1 bg-apex-surface border border-white/[0.06] rounded-xl p-[3px]">
+          <ModeBtn active={mode === 'code'}  icon="💻" label="Código"    onClick={() => onModeChange('code')} />
+          <ModeBtn active={mode === 'prose'} icon="✍️"  label="Lectura"   onClick={() => onModeChange('prose')} />
+        </div>
+
+        {/* Stats + Level */}
         <div className="flex items-center gap-5">
-          <Stat label="WPM"  value={wpm} />
-          <Stat label="ACC"  value={`${accuracy}%`} />
+          <LiveStat label="WPM"  value={wpm} />
+          <div className="w-px h-8 bg-white/[0.06]" />
+          <LiveStat label="ACC"  value={`${accuracy}%`} />
+          <div className="w-px h-8 bg-white/[0.06]" />
+          <LevelBadge level={level} xpPct={xpPct} />
         </div>
       </div>
 
-      {/* Mode selector */}
-      <div className="flex justify-center">
-        <div className="flex gap-0 bg-apex-surface border border-white/[0.06] rounded-[10px] p-[3px]">
-          <ModeBtn active={mode === 'code'}  icon="💻" label="Programación"      onClick={() => onModeChange('code')}  />
-          <ModeBtn active={mode === 'prose'} icon="✍️" label="Lectura y Escritura" onClick={() => onModeChange('prose')} />
-        </div>
-      </div>
-
-      {/* Sub-filters */}
-      <div className="flex justify-center gap-1 flex-wrap">
+      {/* ── Sub-filter bar ────────────────────────────────────────── */}
+      <div className="flex items-center gap-1.5 pt-4 flex-wrap">
+        <span className="text-[0.65rem] font-semibold text-apex-dim tracking-[1.5px] uppercase mr-2">
+          {mode === 'code' ? 'Lenguaje' : 'Categoría'}
+        </span>
         {filters.map(f => (
-          <button
-            key={f}
-            onClick={() => onFilterChange(f)}
-            className={`
-              px-3 py-1 rounded-md text-[0.75rem] font-medium transition-all duration-150
-              ${filter === f
-                ? 'text-apex-violet bg-apex-violet/10'
-                : 'text-apex-muted hover:text-apex-text hover:bg-apex-s2'}
-            `}
-          >
-            {FILTER_LABELS[f]}
-          </button>
+          <FilterChip
+            key={f.id}
+            label={f.label}
+            active={filter === f.id}
+            onClick={() => onFilterChange(f.id)}
+          />
         ))}
       </div>
     </header>
-  )
-}
-
-function Stat({ label, value }) {
-  return (
-    <div className="flex flex-col items-end gap-px">
-      <span className="text-[0.6rem] font-semibold text-apex-muted tracking-[1.5px] uppercase">{label}</span>
-      <span className="font-code text-xl font-semibold text-apex-text tracking-tight leading-none">{value}</span>
-    </div>
   )
 }
 
@@ -86,15 +77,50 @@ function ModeBtn({ active, icon, label, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`
-        flex items-center gap-2 px-5 py-2 rounded-[8px] text-[0.82rem] font-medium
+      className={`flex items-center gap-1.5 px-4 py-2 rounded-[9px] text-[0.8rem] font-medium
         transition-all duration-200 whitespace-nowrap
-        ${active
-          ? 'bg-apex-s3 text-apex-text shadow-sm'
-          : 'text-apex-muted hover:text-apex-text'}
-      `}
+        ${active ? 'bg-apex-s3 text-apex-text shadow-sm' : 'text-apex-muted hover:text-apex-text'}`}
     >
-      <span>{icon}</span> {label}
+      <span className="text-base leading-none">{icon}</span>
+      {label}
     </button>
+  )
+}
+
+function FilterChip({ label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 rounded-lg text-[0.75rem] font-medium transition-all duration-150
+        ${active
+          ? 'bg-apex-violet/10 text-apex-violet border border-apex-violet/20'
+          : 'text-apex-muted hover:text-apex-text hover:bg-apex-s2 border border-transparent'}`}
+    >
+      {label}
+    </button>
+  )
+}
+
+function LiveStat({ label, value }) {
+  return (
+    <div className="flex flex-col items-end gap-[2px]">
+      <span className="text-[0.58rem] font-semibold text-apex-dim tracking-[1.5px] uppercase">{label}</span>
+      <span className="font-code text-[1.3rem] font-semibold text-apex-text leading-none tracking-tight">{value}</span>
+    </div>
+  )
+}
+
+function LevelBadge({ level, xpPct }) {
+  return (
+    <div className="flex items-center gap-2 bg-apex-s2 border border-white/[0.06] rounded-lg px-3 py-1.5">
+      <span className="text-[0.7rem] font-bold text-apex-violet tracking-wider">NVL {level}</span>
+      <div className="w-16 h-[3px] bg-apex-s3 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-apex-violet transition-all duration-500 rounded-full"
+          style={{ width: `${xpPct}%` }}
+        />
+      </div>
+      <span className="text-[0.6rem] text-apex-dim font-code">{xpPct}%</span>
+    </div>
   )
 }

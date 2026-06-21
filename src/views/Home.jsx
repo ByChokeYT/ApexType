@@ -9,7 +9,6 @@ import codeSnippets from '../data/code_snippets.json'
 import textsEs      from '../data/texts_es.json'
 import textsEn      from '../data/texts_en.json'
 
-// ── XP / Level helpers ──────────────────────────────────────────
 function loadStats() {
   return JSON.parse(localStorage.getItem('apexTypeStats')) || { xp: 0, level: 1 }
 }
@@ -17,74 +16,59 @@ function saveStats(s) {
   localStorage.setItem('apexTypeStats', JSON.stringify(s))
 }
 
-// ── Snippet selectors ───────────────────────────────────────────
 function pickSnippet(mode, filter) {
   if (mode === 'code') {
     const pool = filter === 'all'
       ? codeSnippets
       : codeSnippets.filter(s => s.language === filter)
-    const s = pool[Math.floor(Math.random() * pool.length)] ?? codeSnippets[0]
+    const s = (pool.length ? pool : codeSnippets)[Math.floor(Math.random() * (pool.length || codeSnippets.length))]
     return { text: s.code, badge: s.language }
   }
 
-  const esPool = textsEs.filter(t =>
-    filter === 'all'   ? true :
-    filter === 'español' ? true :
-    t.category === filter
-  )
-  const enPool = textsEn.filter(t =>
-    filter === 'all'    ? true :
-    filter === 'english' ? true :
-    t.category === filter
-  )
+  const esPool = textsEs.filter(t => filter === 'all' || filter === 'español' || t.category === filter)
+  const enPool = textsEn.filter(t => filter === 'all' || filter === 'english' || t.category === filter)
 
-  let pool
-  if (filter === 'español')       pool = esPool
-  else if (filter === 'english')  pool = enPool
-  else                            pool = [...esPool, ...enPool]
-
+  let pool = filter === 'español' ? esPool : filter === 'english' ? enPool : [...esPool, ...enPool]
   if (!pool.length) pool = [...textsEs, ...textsEn]
+
   const t = pool[Math.floor(Math.random() * pool.length)]
   return { text: t.text, badge: `${t.title} · ${t.category}` }
 }
 
-// ── LevelUp Popup ───────────────────────────────────────────────
 function LevelUpPopup({ level }) {
   return (
     <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-                    bg-apex-s2 border border-white/[0.06] text-apex-violet
-                    px-12 py-6 rounded-2xl font-bold tracking-[3px] uppercase text-lg
-                    shadow-[0_0_40px_rgba(167,139,250,0.1)] animate-level-pop pointer-events-none">
-      ¡Nivel {level} Alcanzado!
+                    bg-apex-s2 border border-apex-violet/20 text-apex-violet
+                    px-14 py-8 rounded-2xl font-bold tracking-[3px] uppercase text-xl
+                    shadow-[0_0_60px_rgba(167,139,250,0.15)] animate-level-pop pointer-events-none">
+      ⚡ Nivel {level} Alcanzado
     </div>
   )
 }
 
-// ── CapsLock Warning ────────────────────────────────────────────
 function CapsWarning() {
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
+                    flex items-center gap-2
                     bg-apex-s2 text-apex-amber border border-apex-amber/20
-                    px-5 py-2 rounded-xl text-[0.78rem] font-medium tracking-wide
-                    animate-fade-up">
-      ⚠️ Bloq Mayús Activado
+                    px-5 py-2.5 rounded-xl text-[0.78rem] font-medium
+                    animate-fade-up shadow-lg">
+      <span>⚠️</span> Bloq Mayús activado
     </div>
   )
 }
 
-// ── Home View ───────────────────────────────────────────────────
 export default function Home() {
-  const [mode,   setMode]   = useState('code')
-  const [filter, setFilter] = useState('all')
-  const [current, setCurrent] = useState(() => pickSnippet('code', 'all'))
-  const [userStats, setUserStats] = useState(loadStats)
+  const [mode,       setMode]       = useState('code')
+  const [filter,     setFilter]     = useState('all')
+  const [current,    setCurrent]    = useState(() => pickSnippet('code', 'all'))
+  const [userStats,  setUserStats]  = useState(loadStats)
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [capsLock,    setCapsLock]    = useState(false)
 
   const engine = useTypingEngine()
   const timer  = useTimer(engine.isActive, engine.isFinished, engine.currentIndex, engine.errors)
 
-  // Load a new snippet
   const startNew = useCallback((m = mode, f = filter) => {
     const sample = pickSnippet(m, f)
     setCurrent(sample)
@@ -92,11 +76,10 @@ export default function Home() {
     timer.reset()
   }, [mode, filter, engine, timer])
 
-  // Init on mount
+  // Init
   useEffect(() => { engine.reset(current.text) }, []) // eslint-disable-line
 
-  // Handle mode/filter change
-  const handleModeChange = (m) => { setMode(m); setFilter('all'); startNew(m, 'all') }
+  const handleModeChange   = (m) => { setMode(m);   setFilter('all'); startNew(m, 'all') }
   const handleFilterChange = (f) => { setFilter(f); startNew(mode, f) }
 
   // XP on finish
@@ -106,14 +89,19 @@ export default function Home() {
     setUserStats(prev => {
       let { xp, level } = prev
       xp += xpGain
-      if (xp >= level * 100) { xp -= level * 100; level++; setShowLevelUp(true); setTimeout(() => setShowLevelUp(false), 2200) }
+      if (xp >= level * 100) {
+        xp -= level * 100
+        level++
+        setShowLevelUp(true)
+        setTimeout(() => setShowLevelUp(false), 2400)
+      }
       const next = { xp, level }
       saveStats(next)
       return next
     })
   }, [engine.isFinished]) // eslint-disable-line
 
-  // Global keyboard shortcuts
+  // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
       setCapsLock(e.getModifierState?.('CapsLock') ?? false)
@@ -128,45 +116,92 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative z-10 w-full max-w-[900px] mx-auto px-10 py-12 flex flex-col gap-12">
-        <Navbar
-          mode={mode}
-          filter={filter}
-          wpm={timer.wpm}
-          accuracy={timer.accuracy}
-          level={userStats.level}
-          xpPct={xpPct}
-          onModeChange={handleModeChange}
-          onFilterChange={handleFilterChange}
-        />
+      <div className="relative z-10 w-full min-h-screen flex flex-col">
 
-        <main className="relative min-h-[240px] flex items-center">
-          {engine.isFinished ? (
-            <StatsBoard
-              wpm={timer.wpm}
-              accuracy={timer.accuracy}
-              errors={engine.errors}
-              onRestart={startNew}
-            />
-          ) : (
-            <TypingArea
-              snippet={current.text}
-              charStates={engine.charStates}
-              currentIndex={engine.currentIndex}
-              badge={current.badge}
-              onInput={engine.handleInput}
-              onBackspace={engine.handleBackspace}
-            />
-          )}
-        </main>
+        {/* ── Main content area ─────────────────────────────────── */}
+        <div className="flex-1 flex flex-col max-w-[860px] w-full mx-auto px-8 pt-8 pb-6 gap-10">
 
-        <footer className="text-center text-[0.72rem] text-apex-dim tracking-wide">
-          Pulsa <kbd className="font-code text-[0.68rem] text-apex-muted border border-white/[0.06] border-b-2 px-1 py-px rounded bg-apex-s2 mx-0.5">Tab</kbd> para un nuevo fragmento
+          {/* Navbar */}
+          <Navbar
+            mode={mode}
+            filter={filter}
+            wpm={timer.wpm}
+            accuracy={timer.accuracy}
+            level={userStats.level}
+            xpPct={xpPct}
+            onModeChange={handleModeChange}
+            onFilterChange={handleFilterChange}
+          />
+
+          {/* Game area */}
+          <main className="flex-1 flex items-center justify-center py-8">
+            {engine.isFinished ? (
+              <StatsBoard
+                wpm={timer.wpm}
+                accuracy={timer.accuracy}
+                errors={engine.errors}
+                elapsed={timer.elapsed}
+                onRestart={startNew}
+              />
+            ) : (
+              <TypingArea
+                snippet={current.text}
+                charStates={engine.charStates}
+                currentIndex={engine.currentIndex}
+                badge={current.badge}
+                onInput={engine.handleInput}
+                onBackspace={engine.handleBackspace}
+              />
+            )}
+          </main>
+        </div>
+
+        {/* ── Footer ─────────────────────────────────────────────── */}
+        <footer className="border-t border-white/[0.04] py-4">
+          <div className="max-w-[860px] mx-auto px-8 flex items-center justify-between text-[0.7rem] text-apex-dim">
+
+            {/* Left: shortcuts */}
+            <div className="flex items-center gap-4">
+              <ShortcutHint keys={['Tab']}        label="nuevo fragmento" />
+              <ShortcutHint keys={['Backspace']}  label="borrar" />
+            </div>
+
+            {/* Center: branding */}
+            <span className="tracking-widest font-code uppercase text-[0.6rem]">
+              <span className="text-apex-violet/60">apex</span>
+              <span>Type</span>
+            </span>
+
+            {/* Right: mode indicator + session info */}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-apex-emerald" />
+                {mode === 'code' ? 'Modo Código' : 'Modo Lectura'}
+              </span>
+              <span className="text-apex-dim/40">·</span>
+              <span>
+                {engine.currentIndex}/{current.text.length} chars
+              </span>
+            </div>
+          </div>
         </footer>
       </div>
 
       {showLevelUp && <LevelUpPopup level={userStats.level} />}
       {capsLock     && <CapsWarning />}
     </>
+  )
+}
+
+function ShortcutHint({ keys, label }) {
+  return (
+    <span className="flex items-center gap-1.5">
+      {keys.map(k => (
+        <kbd key={k} className="font-code text-[0.6rem] text-apex-muted border border-white/[0.06] border-b-2 px-1.5 py-0.5 rounded bg-apex-s2">
+          {k}
+        </kbd>
+      ))}
+      <span className="text-apex-dim">{label}</span>
+    </span>
   )
 }
