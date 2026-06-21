@@ -266,6 +266,7 @@ function endGame() {
   updateLevelUI();
 
   finalWpm.textContent = wpm;
+  finalWpm.classList.add('highlight');
   finalAcc.textContent = `${accuracy}%`;
   finalErrors.textContent = errors;
 
