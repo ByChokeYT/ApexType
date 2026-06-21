@@ -1,0 +1,47 @@
+[
+  {
+    "category": "citas",
+    "title": "Miguel de Cervantes",
+    "text": "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor."
+  },
+  {
+    "category": "citas",
+    "title": "Gabriel García Márquez",
+    "text": "Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo."
+  },
+  {
+    "category": "citas",
+    "title": "Julio Cortázar",
+    "text": "Andábamos sin buscarnos pero sabiendo que andábamos para encontrarnos. El amor es una enfermedad en un mundo en que lo único sano es el egoísmo."
+  },
+  {
+    "category": "citas",
+    "title": "Jorge Luis Borges",
+    "text": "El tiempo bifurca perpetuamente hacia innumerables futuros. En uno de ellos soy tu enemigo. El laberinto es la forma de la duda; el desierto, la forma del olvido."
+  },
+  {
+    "category": "historias",
+    "title": "El Sendero del Bosque",
+    "text": "El viento soplaba suavemente entre las copas de los pinos centenarios. El aroma a tierra mojada y a resina inundaba el sendero silencioso, invitando al caminante a perderse en el misterio de la naturaleza."
+  },
+  {
+    "category": "historias",
+    "title": "La Promesa del Mañana",
+    "text": "La inteligencia artificial y el ingenio humano convergen en una danza tecnológica que promete resolver los desafíos más grandes del cambio climático, la medicina y la exploración espacial profunda."
+  },
+  {
+    "category": "curiosidades",
+    "title": "El Tiempo en Venus",
+    "text": "Un día en Venus es más largo que un año en el mismo planeta. Tarda doscientos cuarenta y tres días terrestres en girar una sola vez sobre su propio eje, mientras su órbita solar toma solo doscientos veinticinco días."
+  },
+  {
+    "category": "curiosidades",
+    "title": "La Red del Bosque",
+    "text": "Los árboles pueden comunicarse entre sí a través de una red subterránea de hongos llamada micelio. Comparten nutrientes, agua e información sobre plagas cercanas de manera completamente altruista."
+  },
+  {
+    "category": "curiosidades",
+    "title": "El Universo Observable",
+    "text": "El universo observable tiene un diámetro de noventa y tres mil millones de años luz, pero solo tiene trece mil ochocientos millones de años. Esto se debe a que el espacio mismo se está expandiendo a una velocidad mayor que la luz."
+  }
+]

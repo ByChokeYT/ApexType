@@ -1,0 +1,47 @@
+[
+  {
+    "category": "quotes",
+    "title": "Steve Jobs",
+    "text": "Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma, which is living with the results of other people's thinking. Have the courage to follow your heart."
+  },
+  {
+    "category": "quotes",
+    "title": "Albert Einstein",
+    "text": "Look deep into nature, and then you will understand everything better. Life is like riding a bicycle. To keep your balance, you must keep moving forward without stopping."
+  },
+  {
+    "category": "quotes",
+    "title": "Linus Torvalds",
+    "text": "Talk is cheap. Show me the code. Software is like sex: it's better when it's free. Most good programmers do programming not because they expect to get paid, but because it is fun."
+  },
+  {
+    "category": "quotes",
+    "title": "Donald Knuth",
+    "text": "Premature optimization is the root of all evil. Programs are meant to be read by humans and only incidentally for computers to execute. The best programs are written so that computing machines can perform them quickly."
+  },
+  {
+    "category": "stories",
+    "title": "The Whispering Forest",
+    "text": "A soft autumn breeze rustled through the ancient oak tree leaves. Sunlight filtered through the dense canopy, casting golden shadows upon the damp moss-covered path that led deeper into the unknown wilderness."
+  },
+  {
+    "category": "stories",
+    "title": "The Silent Terminal",
+    "text": "She stared at the blinking cursor for what felt like hours. The codebase was a labyrinth, but somewhere in its depths was the answer. She typed one more function and watched the tests turn green, one by one."
+  },
+  {
+    "category": "facts",
+    "title": "Deep Ocean Wonders",
+    "text": "Over eighty percent of the ocean remains completely unmapped and unexplored. We actually know more about the topography of Mars and the Moon than we do about our own planet's deep ocean floor and its mysteries."
+  },
+  {
+    "category": "facts",
+    "title": "The Speed of Thought",
+    "text": "The human brain processes images in as little as thirteen milliseconds. Neural signals travel through the body at speeds ranging from one to one hundred and twenty meters per second depending on the type of nerve fiber."
+  },
+  {
+    "category": "facts",
+    "title": "Stars in the Milky Way",
+    "text": "The Milky Way galaxy contains somewhere between one hundred and four hundred billion stars. On a clear night, the human eye can see roughly five thousand of them. Each one is a sun, many with their own planetary systems."
+  }
+]
