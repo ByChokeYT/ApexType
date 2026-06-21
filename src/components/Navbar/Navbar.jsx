@@ -10,6 +10,13 @@ const CODE_FILTERS = [
   { id: 'css',        label: 'CSS' },
 ]
 
+const DIFFICULTY_FILTERS = [
+  { id: 'all',          label: 'Todos', dot: '' },
+  { id: 'basico',       label: 'Básico', dot: 'bg-apex-emerald' },
+  { id: 'medio',        label: 'Medio',  dot: 'bg-apex-amber' },
+  { id: 'profesional',  label: 'Profesional', dot: 'bg-[#f87171]' },
+]
+
 const PROSE_FILTERS = [
   { id: 'all',          label: 'Todos' },
   { id: 'español',      label: '🇧🇴 Español' },
@@ -20,7 +27,7 @@ const PROSE_FILTERS = [
   { id: 'curiosidades', label: 'Curiosidades' },
 ]
 
-export default function Navbar({ mode, filter, wpm, accuracy, level, xpPct, onModeChange, onFilterChange }) {
+export default function Navbar({ mode, filter, difficulty, wpm, accuracy, level, xpPct, onModeChange, onFilterChange, onDifficultyChange }) {
   const filters = mode === 'code' ? CODE_FILTERS : PROSE_FILTERS
 
   return (
@@ -56,18 +63,38 @@ export default function Navbar({ mode, filter, wpm, accuracy, level, xpPct, onMo
       </div>
 
       {/* ── Sub-filter bar ────────────────────────────────────────── */}
-      <div className="flex items-center gap-1.5 pt-4 flex-wrap">
-        <span className="text-[0.65rem] font-semibold text-apex-dim tracking-[1.5px] uppercase mr-2">
-          {mode === 'code' ? 'Lenguaje' : 'Categoría'}
-        </span>
-        {filters.map(f => (
-          <FilterChip
-            key={f.id}
-            label={f.label}
-            active={filter === f.id}
-            onClick={() => onFilterChange(f.id)}
-          />
-        ))}
+      <div className="flex flex-col gap-2 pt-4">
+        {/* Language / Category row */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[0.6rem] font-semibold text-apex-dim tracking-[1.5px] uppercase w-16 shrink-0">
+            {mode === 'code' ? 'Lenguaje' : 'Categoría'}
+          </span>
+          {filters.map(f => (
+            <FilterChip key={f.id} label={f.label} active={filter === f.id} onClick={() => onFilterChange(f.id)} />
+          ))}
+        </div>
+
+        {/* Difficulty row — only in code mode */}
+        {mode === 'code' && (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[0.6rem] font-semibold text-apex-dim tracking-[1.5px] uppercase w-16 shrink-0">
+              Nivel
+            </span>
+            {DIFFICULTY_FILTERS.map(d => (
+              <button
+                key={d.id}
+                onClick={() => onDifficultyChange(d.id)}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[0.75rem] font-medium transition-all duration-150
+                  ${ difficulty === d.id
+                    ? 'bg-apex-s3 text-apex-text border border-white/10'
+                    : 'text-apex-muted hover:text-apex-text border border-transparent'}`}
+              >
+                {d.dot && <span className={`w-1.5 h-1.5 rounded-full ${d.dot}`} />}
+                {d.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   )

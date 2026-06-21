@@ -16,23 +16,33 @@ function saveStats(s) {
   localStorage.setItem('apexTypeStats', JSON.stringify(s))
 }
 
-function pickSnippet(mode, filter) {
+// Returns { text, badge, metadata }
+function pickSnippet(mode, filter, difficulty = 'all') {
   if (mode === 'code') {
-    const pool = filter === 'all'
-      ? codeSnippets
-      : codeSnippets.filter(s => s.language === filter)
-    const s = (pool.length ? pool : codeSnippets)[Math.floor(Math.random() * (pool.length || codeSnippets.length))]
-    return { text: s.code, badge: s.language }
+    let pool = codeSnippets
+    if (filter !== 'all')     pool = pool.filter(s => s.language === filter)
+    if (difficulty !== 'all') pool = pool.filter(s => s.difficulty === difficulty)
+    if (!pool.length) pool = codeSnippets
+
+    const s = pool[Math.floor(Math.random() * pool.length)]
+    return {
+      text: s.code,
+      badge: s.language,
+      metadata: { language: s.language, difficulty: s.difficulty, output: s.output },
+    }
   }
 
   const esPool = textsEs.filter(t => filter === 'all' || filter === 'español' || t.category === filter)
   const enPool = textsEn.filter(t => filter === 'all' || filter === 'english' || t.category === filter)
-
   let pool = filter === 'español' ? esPool : filter === 'english' ? enPool : [...esPool, ...enPool]
   if (!pool.length) pool = [...textsEs, ...textsEn]
 
   const t = pool[Math.floor(Math.random() * pool.length)]
-  return { text: t.text, badge: `${t.title} · ${t.category}` }
+  return {
+    text: t.text,
+    badge: `${t.title} · ${t.category}`,
+    metadata: null,
+  }
 }
 
 function LevelUpPopup({ level }) {
@@ -48,11 +58,9 @@ function LevelUpPopup({ level }) {
 
 function CapsWarning() {
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
-                    flex items-center gap-2
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2
                     bg-apex-s2 text-apex-amber border border-apex-amber/20
-                    px-5 py-2.5 rounded-xl text-[0.78rem] font-medium
-                    animate-fade-up shadow-lg">
+                    px-5 py-2.5 rounded-xl text-[0.78rem] font-medium animate-fade-up shadow-lg">
       <span>⚠️</span> Bloq Mayús activado
     </div>
   )
@@ -61,7 +69,8 @@ function CapsWarning() {
 export default function Home() {
   const [mode,       setMode]       = useState('code')
   const [filter,     setFilter]     = useState('all')
-  const [current,    setCurrent]    = useState(() => pickSnippet('code', 'all'))
+  const [difficulty, setDifficulty] = useState('all')
+  const [current,    setCurrent]    = useState(() => pickSnippet('code', 'all', 'all'))
   const [userStats,  setUserStats]  = useState(loadStats)
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [capsLock,    setCapsLock]    = useState(false)
@@ -69,18 +78,22 @@ export default function Home() {
   const engine = useTypingEngine()
   const timer  = useTimer(engine.isActive, engine.isFinished, engine.currentIndex, engine.errors)
 
-  const startNew = useCallback((m = mode, f = filter) => {
-    const sample = pickSnippet(m, f)
+  const startNew = useCallback((m = mode, f = filter, d = difficulty) => {
+    const sample = pickSnippet(m, f, d)
     setCurrent(sample)
     engine.reset(sample.text)
     timer.reset()
-  }, [mode, filter, engine, timer])
+  }, [mode, filter, difficulty, engine, timer])
 
   // Init
   useEffect(() => { engine.reset(current.text) }, []) // eslint-disable-line
 
-  const handleModeChange   = (m) => { setMode(m);   setFilter('all'); startNew(m, 'all') }
-  const handleFilterChange = (f) => { setFilter(f); startNew(mode, f) }
+  const handleModeChange = (m) => {
+    setMode(m); setFilter('all'); setDifficulty('all')
+    startNew(m, 'all', 'all')
+  }
+  const handleFilterChange = (f) => { setFilter(f); startNew(mode, f, difficulty) }
+  const handleDifficultyChange = (d) => { setDifficulty(d); startNew(mode, filter, d) }
 
   // XP on finish
   useEffect(() => {
@@ -90,8 +103,7 @@ export default function Home() {
       let { xp, level } = prev
       xp += xpGain
       if (xp >= level * 100) {
-        xp -= level * 100
-        level++
+        xp -= level * 100; level++
         setShowLevelUp(true)
         setTimeout(() => setShowLevelUp(false), 2400)
       }
@@ -117,30 +129,29 @@ export default function Home() {
   return (
     <>
       <div className="relative z-10 w-full min-h-screen flex flex-col">
-
-        {/* ── Main content area ─────────────────────────────────── */}
         <div className="flex-1 flex flex-col max-w-[860px] w-full mx-auto px-8 pt-8 pb-6 gap-10">
 
-          {/* Navbar */}
           <Navbar
             mode={mode}
             filter={filter}
+            difficulty={difficulty}
             wpm={timer.wpm}
             accuracy={timer.accuracy}
             level={userStats.level}
             xpPct={xpPct}
             onModeChange={handleModeChange}
             onFilterChange={handleFilterChange}
+            onDifficultyChange={handleDifficultyChange}
           />
 
-          {/* Game area */}
-          <main className="flex-1 flex items-center justify-center py-8">
+          <main className="flex-1 flex items-start justify-center py-4">
             {engine.isFinished ? (
               <StatsBoard
                 wpm={timer.wpm}
                 accuracy={timer.accuracy}
                 errors={engine.errors}
                 elapsed={timer.elapsed}
+                snippet={current.metadata}
                 onRestart={startNew}
               />
             ) : (
@@ -159,29 +170,20 @@ export default function Home() {
         {/* ── Footer ─────────────────────────────────────────────── */}
         <footer className="border-t border-white/[0.04] py-4">
           <div className="max-w-[860px] mx-auto px-8 flex items-center justify-between text-[0.7rem] text-apex-dim">
-
-            {/* Left: shortcuts */}
             <div className="flex items-center gap-4">
-              <ShortcutHint keys={['Tab']}        label="nuevo fragmento" />
-              <ShortcutHint keys={['Backspace']}  label="borrar" />
+              <ShortcutHint keys={['Tab']}       label="nuevo fragmento" />
+              <ShortcutHint keys={['Backspace']} label="borrar" />
             </div>
-
-            {/* Center: branding */}
             <span className="tracking-widest font-code uppercase text-[0.6rem]">
-              <span className="text-apex-violet/60">apex</span>
-              <span>Type</span>
+              <span className="text-apex-violet/60">apex</span>Type
             </span>
-
-            {/* Right: mode indicator + session info */}
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full bg-apex-emerald" />
                 {mode === 'code' ? 'Modo Código' : 'Modo Lectura'}
               </span>
-              <span className="text-apex-dim/40">·</span>
-              <span>
-                {engine.currentIndex}/{current.text.length} chars
-              </span>
+              <span className="text-white/10">·</span>
+              <span>{engine.currentIndex}/{current.text.length} chars</span>
             </div>
           </div>
         </footer>

@@ -1,14 +1,121 @@
 [
-  { "language": "javascript", "code": "const calculateWPM = (chars, time) => {\n  return Math.round((chars / 5) / (time / 60));\n};" },
-  { "language": "javascript", "code": "document.addEventListener(\"keydown\", (e) => {\n  if (e.key === \"Enter\") handleNextSnippet();\n});" },
-  { "language": "javascript", "code": "async function fetchData(url) {\n  const response = await fetch(url);\n  return response.json();\n}" },
-  { "language": "javascript", "code": "const proxy = new Proxy(target, {\n  get: (obj, prop) => {\n    return prop in obj ? obj[prop] : \"Not Found\";\n  }\n});" },
-  { "language": "javascript", "code": "const debounce = (fn, delay) => {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n};" },
-  { "language": "php", "code": "public function getUserData(int $id): array {\n    return $this->db->query(\"SELECT * FROM users WHERE id = ?\", [$id]);\n}" },
-  { "language": "php", "code": "foreach ($items as $item) {\n    echo \"Processing: \" . $item->name . PHP_EOL;\n}" },
-  { "language": "python", "code": "def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a + b" },
-  { "language": "python", "code": "class DataProcessor:\n    def __init__(self, data: list):\n        self.data = data\n\n    def filter(self, predicate):\n        return [x for x in self.data if predicate(x)]" },
-  { "language": "golang", "code": "func main() {\n    http.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n        fmt.Fprintf(w, \"Hello, apexType!\")\n    })\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}" },
-  { "language": "java", "code": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Type fast, code better!\");\n    }\n}" },
-  { "language": "css", "code": ".typing-container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n}" }
+  {
+    "id": "js-basico-1",
+    "language": "javascript",
+    "difficulty": "basico",
+    "code": "const nombre = \"apexType\";\nconst version = 1;\nconsole.log(`Bienvenido a ${nombre} v${version}`);",
+    "output": "> Bienvenido a apexType v1"
+  },
+  {
+    "id": "js-basico-2",
+    "language": "javascript",
+    "difficulty": "basico",
+    "code": "function sumar(a, b) {\n  return a + b;\n}\nconsole.log(sumar(10, 25));",
+    "output": "> 35"
+  },
+  {
+    "id": "js-basico-3",
+    "language": "javascript",
+    "difficulty": "basico",
+    "code": "const numeros = [1, 2, 3, 4, 5];\nconst suma = numeros.reduce((acc, n) => acc + n, 0);\nconsole.log(\"Total:\", suma);",
+    "output": "> Total: 15"
+  },
+  {
+    "id": "py-basico-1",
+    "language": "python",
+    "difficulty": "basico",
+    "code": "nombre = \"Python\"\nversion = 3.12\nprint(f\"Usando {nombre} {version}\")",
+    "output": "> Usando Python 3.12"
+  },
+  {
+    "id": "py-basico-2",
+    "language": "python",
+    "difficulty": "basico",
+    "code": "numeros = [2, 4, 6, 8, 10]\npromedio = sum(numeros) / len(numeros)\nprint(\"Promedio:\", promedio)",
+    "output": "> Promedio: 6.0"
+  },
+  {
+    "id": "php-basico-1",
+    "language": "php",
+    "difficulty": "basico",
+    "code": "<?php\n$lenguaje = \"PHP\";\n$anio = 2024;\necho \"Aprendiendo {$lenguaje} en {$anio}\";",
+    "output": "> Aprendiendo PHP en 2024"
+  },
+  {
+    "id": "js-medio-1",
+    "language": "javascript",
+    "difficulty": "medio",
+    "code": "const wpm = (chars, seconds) =>\n  Math.round((chars / 5) / (seconds / 60));\n\nconst result = wpm(250, 30);\nconsole.log(`WPM: ${result}`);",
+    "output": "> WPM: 100"
+  },
+  {
+    "id": "js-medio-2",
+    "language": "javascript",
+    "difficulty": "medio",
+    "code": "const usuarios = [\n  { nombre: \"Ana\", nivel: 3 },\n  { nombre: \"Luis\", nivel: 7 },\n  { nombre: \"Mia\", nivel: 5 },\n];\nconst top = usuarios.sort((a, b) => b.nivel - a.nivel);\nconsole.log(top[0].nombre);",
+    "output": "> Luis"
+  },
+  {
+    "id": "js-medio-3",
+    "language": "javascript",
+    "difficulty": "medio",
+    "code": "const debounce = (fn, delay) => {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n};\nconsole.log(typeof debounce(() => {}, 300));",
+    "output": "> function"
+  },
+  {
+    "id": "py-medio-1",
+    "language": "python",
+    "difficulty": "medio",
+    "code": "def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a + b\n\nprint(list(fibonacci(7)))",
+    "output": "> [0, 1, 1, 2, 3, 5, 8]"
+  },
+  {
+    "id": "php-medio-1",
+    "language": "php",
+    "difficulty": "medio",
+    "code": "<?php\n$precios = [100, 250, 75, 430, 50];\n$filtrados = array_filter($precios, fn($p) => $p > 100);\necho implode(\", \", $filtrados);",
+    "output": "> 250, 430"
+  },
+  {
+    "id": "css-medio-1",
+    "language": "css",
+    "difficulty": "medio",
+    "code": ".card {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 1.5rem;\n  padding: 2rem;\n  background: #0d0d0d;\n  border-radius: 12px;\n}",
+    "output": "> ✓ Estilos aplicados correctamente\n> Grid: 3 columnas · gap: 1.5rem"
+  },
+  {
+    "id": "js-profesional-1",
+    "language": "javascript",
+    "difficulty": "profesional",
+    "code": "class EventEmitter {\n  #handlers = {};\n  on(event, fn) { (this.#handlers[event] ??= []).push(fn); }\n  emit(event, data) {\n    this.#handlers[event]?.forEach(fn => fn(data));\n  }\n}\nconst bus = new EventEmitter();\nbus.on('login', user => console.log(`[AUTH] ${user} conectado`));\nbus.emit('login', 'ByChokeYT');",
+    "output": "> [AUTH] ByChokeYT conectado"
+  },
+  {
+    "id": "js-profesional-2",
+    "language": "javascript",
+    "difficulty": "profesional",
+    "code": "async function fetchUser(id) {\n  const res = await fetch(`/api/users/${id}`);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return res.json();\n}\n\nfetchUser(42)\n  .then(u => console.log(`Usuario: ${u.name}`))\n  .catch(e => console.error(`Error: ${e.message}`));",
+    "output": "> Usuario: ByChokeYT"
+  },
+  {
+    "id": "py-profesional-1",
+    "language": "python",
+    "difficulty": "profesional",
+    "code": "from functools import reduce\nfrom typing import Callable\n\ndef pipe(*fns: Callable):\n    return lambda x: reduce(lambda v, f: f(v), fns, x)\n\nprocesar = pipe(\n    lambda s: s.strip(),\n    lambda s: s.upper(),\n    lambda s: f\"[{s}]\",\n)\nprint(processar(\"  apexType  \"))",
+    "output": "> [APEXTYPE]"
+  },
+  {
+    "id": "go-profesional-1",
+    "language": "golang",
+    "difficulty": "profesional",
+    "code": "package main\n\nimport (\n  \"fmt\"\n  \"sync\"\n)\n\nfunc main() {\n  var wg sync.WaitGroup\n  for i := 1; i <= 3; i++ {\n    wg.Add(1)\n    go func(n int) {\n      defer wg.Done()\n      fmt.Printf(\"goroutine %d done\\n\", n)\n    }(i)\n  }\n  wg.Wait()\n}",
+    "output": "> goroutine 1 done\n> goroutine 2 done\n> goroutine 3 done"
+  },
+  {
+    "id": "java-profesional-1",
+    "language": "java",
+    "difficulty": "profesional",
+    "code": "import java.util.stream.IntStream;\n\npublic class Main {\n  public static void main(String[] args) {\n    int sum = IntStream.rangeClosed(1, 10)\n      .filter(n -> n % 2 == 0)\n      .sum();\n    System.out.println(\"Suma pares 1-10: \" + sum);\n  }\n}",
+    "output": "> Suma pares 1-10: 30"
+  }
 ]
